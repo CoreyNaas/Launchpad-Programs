@@ -1,0 +1,1 @@
+.\back.o: back.s

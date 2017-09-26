@@ -1,0 +1,154 @@
+
+
+
+ARM Macro Assembler    Page 1 
+
+
+    1 00000000         ; Program Name: back.s
+    2 00000000         ; Function: backend assembly for PePo
+    3 00000000         ; Programmer: Corey Naas
+    4 00000000         ; Date: 2017/09/26
+    5 00000000         
+    6 00000000         ; This example accompanies the EETC4213 course
+    7 00000000         
+    8 00000000         
+    9 00000000         ;DATA AREA -----------------------------------------
+   10 00000000                 AREA             Variables, DATA, READWRITE, ALI
+GN=2
+   11 00000000 00 00 00 
+              00       addr    SPACE            4
+   12 00000004 00 00 00 
+              00       value   SPACE            4
+   13 00000008                 ALIGN
+   14 00000008                 EXPORT           addr
+   15 00000008                 EXPORT           value
+   16 00000008         
+   17 00000008         ;CODE AREA -------------------------------------------
+   18 00000008                 AREA             |.text|, CODE, READONLY, ALIGN=
+2
+   19 00000000                 EXPORT           Peek
+   20 00000000                 EXPORT           Poke
+   21 00000000         
+   22 00000000         Peek
+   23 00000000 E92D 03F0       PUSH             {R4,R5,R6,R7,R8,R9}
+   24 00000004 4808            LDR              R0, =addr
+   25 00000006 4909            LDR              R1, =value
+   26 00000008 6800            LDR              R0, [R0]    ;load address to pe
+                                                            ek
+   27 0000000A         
+   28 0000000A 6802            LDR              R2, [R0]    ;load value at addr
+                                                            ess
+   29 0000000C 600A            STR              R2, [R1]    ;store value in 'va
+                                                            lue'
+   30 0000000E         
+   31 0000000E E007            b                end
+   32 00000010         Poke
+   33 00000010 E92D 03F0       PUSH             {R4,R5,R6,R7,R8,R9}
+   34 00000014         
+   35 00000014 4804            LDR              R0, =addr
+   36 00000016 4905            LDR              R1, =value
+   37 00000018 6800            LDR              R0, [R0]    ;load address to po
+                                                            ke
+   38 0000001A         
+   39 0000001A 680A            LDR              R2, [R1]    ;load value to poke
+                                                            
+   40 0000001C 6002            STR              R2, [R0]    ;store value at add
+                                                            ress
+   41 0000001E         
+   42 0000001E E7FF            b                end
+   43 00000020         
+   44 00000020         ;Code should end safely
+   45 00000020 E8BD 03F0 
+                       end     POP              {R4,R5,R6,R7,R8,R9}
+   46 00000024 4770            BX               LR
+   47 00000026         
+   48 00000026 00 00           ALIGN
+
+
+
+ARM Macro Assembler    Page 2 
+
+
+   49 00000028                 END
+              00000000 
+              00000000 
+Command Line: --debug --xref --cpu=Cortex-M4 --apcs=interwork --depend=.\back.d
+ -o.\back.o -IC:\Keil\ARM\RV31\INC -IC:\Keil\ARM\CMSIS\Include -IC:\Keil\ARM\In
+c\Luminary --predefine="__EVAL SETA 1" --predefine="__MICROLIB SETA 1" --list=.
+\back.lst back.s
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+Variables 00000000
+
+Symbol: Variables
+   Definitions
+      At line 10 in file back.s
+   Uses
+      None
+Comment: Variables unused
+addr 00000000
+
+Symbol: addr
+   Definitions
+      At line 11 in file back.s
+   Uses
+      At line 14 in file back.s
+      At line 24 in file back.s
+      At line 35 in file back.s
+
+value 00000004
+
+Symbol: value
+   Definitions
+      At line 12 in file back.s
+   Uses
+      At line 15 in file back.s
+      At line 25 in file back.s
+      At line 36 in file back.s
+
+3 symbols
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+.text 00000000
+
+Symbol: .text
+   Definitions
+      At line 18 in file back.s
+   Uses
+      None
+Comment: .text unused
+Peek 00000000
+
+Symbol: Peek
+   Definitions
+      At line 22 in file back.s
+   Uses
+      At line 19 in file back.s
+Comment: Peek used once
+Poke 00000010
+
+Symbol: Poke
+   Definitions
+      At line 32 in file back.s
+   Uses
+      At line 20 in file back.s
+Comment: Poke used once
+end 00000020
+
+Symbol: end
+   Definitions
+      At line 45 in file back.s
+   Uses
+      At line 31 in file back.s
+      At line 42 in file back.s
+
+4 symbols
+341 symbols in table
