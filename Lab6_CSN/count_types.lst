@@ -1,0 +1,351 @@
+
+
+
+ARM Macro Assembler    Page 1 
+
+
+    1 00000000         ; Program Name: Lab5.s
+    2 00000000         ; Function: Iterates through a given block of memory and
+                        counts the number of
+    3 00000000         ;   negative numbers, zero numbers, nonzero positive num
+                       bers.
+    4 00000000         ; Programmer: Corey Naas, Logan Robins
+    5 00000000         ; Date: 2017/09/18
+    6 00000000         
+    7 00000000         ;DATA AREA -----------------------------------------
+    8 00000000                 AREA             Variables, DATA, READWRITE, ALI
+GN=2
+    9 00000000 00 00 00 
+              00       StrtAddr
+                               SPACE            4
+   10 00000004 00 00 00 
+              00       EndAddr SPACE            4
+   11 00000008 00 00 00 
+              00       NegCount
+                               SPACE            4
+   12 0000000C 00 00 00 
+              00       ZerCount
+                               SPACE            4
+   13 00000010 00 00 00 
+              00       PosCount
+                               SPACE            4
+   14 00000014                 ALIGN
+   15 00000014                 EXPORT           StrtAddr
+   16 00000014                 EXPORT           EndAddr
+   17 00000014                 EXPORT           NegCount
+   18 00000014                 EXPORT           ZerCount
+   19 00000014                 EXPORT           PosCount
+   20 00000014         
+   21 00000014         ;CODE AREA -------------------------------------------
+   22 00000014                 AREA             |.text|, CODE, READONLY, ALIGN=
+2
+   23 00000000                 EXPORT           Count_Types
+   24 00000000         
+   25 00000000         
+   26 00000000         Count_Types
+   27 00000000 E92D 03F0       PUSH             {R4,R5,R6,R7,R8,R9}
+   28 00000004         ;Clear results
+   29 00000004 F04F 0000       MOV              R0, #0x0
+   30 00000008 491B            LDR              R1, =NegCount
+   31 0000000A F841 0B04       STR              R0, [R1], #4
+   32 0000000E F841 0B04       STR              R0, [R1], #4
+   33 00000012 6008            STR              R0, [R1]
+   34 00000014         
+   35 00000014         ;Load starting and ending addresses
+   36 00000014 4819            LDR              R0, =StrtAddr ;Never reference 
+                                                            exact memory locati
+                                                            ons
+   37 00000016 6800            LDR              R0, [R0]
+   38 00000018 4919            LDR              R1, =EndAddr ;Never reference e
+                                                            xact memory locatio
+                                                            ns
+   39 0000001A 6809            LDR              R1, [R1]
+   40 0000001C         ;Checks addrs vals: if strt > end, jmp to zeroAll.
+   41 0000001C         ;     if strt== end, jmp to runOnce
+   42 0000001C 4281            CMP              R1, R0      ;end - strt
+
+
+
+ARM Macro Assembler    Page 2 
+
+
+   43 0000001E D40C            BMI              zeroAll     ;jmp if end is high
+                                                            er than start
+   44 00000020 E7FF            B                init        ;else goto init 
+   45 00000022         
+   46 00000022         ;Initialize loop
+   47 00000022         init
+   48 00000022 4604            MOV              R4, R0
+   49 00000024         ;Begin counting loop 
+   50 00000024         cLoop
+   51 00000024 F854 5B04       LDR              R5, [R4], #4 ;ld value into R5,
+                                                             iterate addr
+   52 00000028 2D00            CMP              R5, #0      ;do comparison
+   53 0000002A D013            BEQ              isZero
+   54 0000002C DA0F            BGE              isPositive
+   55 0000002E DB14            BLT              isNegative
+   56 00000030 E016            B                isError
+   57 00000032         cLoopRet
+   58 00000032 42A1            CMP              R1, R4
+   59 00000034 D017            BEQ              EndProg     ;if R0 == R1, break
+                                                             loop and end
+   60 00000036 DB16            BLT              EndProg
+   61 00000038 E7F4            B                cLoop       ;if R0 < R1, contin
+                                                            ue
+   62 0000003A         
+   63 0000003A         ;Zeros all outputs if StrtAddr > EndAddr
+   64 0000003A         zeroAll
+   65 0000003A F04F 0300       MOV              R3, #0
+   66 0000003E 6013            STR              R3, [R2]
+   67 00000040 F842 3B04       STR              R3, [R2], #4
+   68 00000044 F842 3B04       STR              R3, [R2], #4
+   69 00000048 F04F 0001       MOV              R0, #1      ;return with 1 in R
+                                                            0
+   70 0000004C E010            B                loop        ;goto end
+   71 0000004E         
+   72 0000004E         ;####################
+   73 0000004E         ;NAME: isPositive
+   74 0000004E         ;FUNC: adds to isPos counter if # is nonzero positive
+   75 0000004E         ;INPU: 
+   76 0000004E         ;OUTP: 
+   77 0000004E         ;REGD: 
+   78 0000004E         ;********************
+   79 0000004E         isPositive
+   80 0000004E F106 0601       ADD              R6, R6, #1
+   81 00000052 E7EE            B                cLoopRet    ;return to cloop
+   82 00000054         
+   83 00000054         ;####################
+   84 00000054         ;NAME: isZero
+   85 00000054         ;FUNC: adds to isZero counter if # is zero
+   86 00000054         ;INPU: 
+   87 00000054         ;OUTP: 
+   88 00000054         ;REGD: 
+   89 00000054         ;********************
+   90 00000054         isZero
+   91 00000054 F107 0701       ADD              R7, R7, #1
+   92 00000058 E7EB            B                cLoopRet    ;return to cloop
+   93 0000005A         
+   94 0000005A         ;####################
+   95 0000005A         ;NAME: isNegative
+   96 0000005A         ;FUNC: adds to isPos counter if # is negative
+
+
+
+ARM Macro Assembler    Page 3 
+
+
+   97 0000005A         ;INPU: 
+   98 0000005A         ;OUTP: 
+   99 0000005A         ;REGD: 
+  100 0000005A         ;********************
+  101 0000005A         isNegative
+  102 0000005A F108 0801       ADD              R8, R8, #1
+  103 0000005E E7E8            B                cLoopRet    ;return to cloop
+  104 00000060         
+  105 00000060         ;####################
+  106 00000060         ;NAME: isError
+  107 00000060         ;FUNC: Catches errors I guess.
+  108 00000060         ;INPU: 
+  109 00000060         ;OUTP: 
+  110 00000060         ;REGD: 
+  111 00000060         ;********************
+  112 00000060         isError
+  113 00000060 F64C 2CFE       MOV              R12, #0xCAFE ;obvious error mes
+                                                            sage to R12*
+  114 00000064 E004            B                loop
+  115 00000066         
+  116 00000066         ;Stores results of counting into RAM
+  117 00000066         EndProg
+  118 00000066 4A04            LDR              R2, =NegCount
+  119 00000068 F8C2 8000       STR              R8, [R2]
+  120 0000006C 6057            STR              R7, [R2, #4]
+  121 0000006E 6096            STR              R6, [R2, #8]
+  122 00000070         
+  123 00000070         
+  124 00000070         ;Code should end safely
+  125 00000070 E8BD 03F0 
+                       loop    POP              {R4,R5,R6,R7,R8,R9} ; Stay put
+  126 00000074 4770            BX               LR
+  127 00000076         
+  128 00000076 00 00           ALIGN
+  129 00000078                 END
+              00000000 
+              00000000 
+              00000000 
+Command Line: --debug --xref --cpu=Cortex-M4 --apcs=interwork --depend=.\count_
+types.d -o.\count_types.o -IC:\Keil\ARM\RV31\INC -IC:\Keil\ARM\CMSIS\Include -I
+C:\Keil\ARM\Inc\Luminary --predefine="__EVAL SETA 1" --predefine="__MICROLIB SE
+TA 1" --list=.\count_types.lst Count_Types.s
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+EndAddr 00000004
+
+Symbol: EndAddr
+   Definitions
+      At line 10 in file Count_Types.s
+   Uses
+      At line 16 in file Count_Types.s
+      At line 38 in file Count_Types.s
+
+NegCount 00000008
+
+Symbol: NegCount
+   Definitions
+      At line 11 in file Count_Types.s
+   Uses
+      At line 17 in file Count_Types.s
+      At line 30 in file Count_Types.s
+      At line 118 in file Count_Types.s
+
+PosCount 00000010
+
+Symbol: PosCount
+   Definitions
+      At line 13 in file Count_Types.s
+   Uses
+      At line 19 in file Count_Types.s
+Comment: PosCount used once
+StrtAddr 00000000
+
+Symbol: StrtAddr
+   Definitions
+      At line 9 in file Count_Types.s
+   Uses
+      At line 15 in file Count_Types.s
+      At line 36 in file Count_Types.s
+
+Variables 00000000
+
+Symbol: Variables
+   Definitions
+      At line 8 in file Count_Types.s
+   Uses
+      None
+Comment: Variables unused
+ZerCount 0000000C
+
+Symbol: ZerCount
+   Definitions
+      At line 12 in file Count_Types.s
+   Uses
+      At line 18 in file Count_Types.s
+Comment: ZerCount used once
+6 symbols
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+.text 00000000
+
+Symbol: .text
+   Definitions
+      At line 22 in file Count_Types.s
+   Uses
+      None
+Comment: .text unused
+Count_Types 00000000
+
+Symbol: Count_Types
+   Definitions
+      At line 26 in file Count_Types.s
+   Uses
+      At line 23 in file Count_Types.s
+Comment: Count_Types used once
+EndProg 00000066
+
+Symbol: EndProg
+   Definitions
+      At line 117 in file Count_Types.s
+   Uses
+      At line 59 in file Count_Types.s
+      At line 60 in file Count_Types.s
+
+cLoop 00000024
+
+Symbol: cLoop
+   Definitions
+      At line 50 in file Count_Types.s
+   Uses
+      At line 61 in file Count_Types.s
+Comment: cLoop used once
+cLoopRet 00000032
+
+Symbol: cLoopRet
+   Definitions
+      At line 57 in file Count_Types.s
+   Uses
+      At line 81 in file Count_Types.s
+      At line 92 in file Count_Types.s
+      At line 103 in file Count_Types.s
+
+init 00000022
+
+Symbol: init
+   Definitions
+      At line 47 in file Count_Types.s
+   Uses
+      At line 44 in file Count_Types.s
+Comment: init used once
+isError 00000060
+
+Symbol: isError
+   Definitions
+      At line 112 in file Count_Types.s
+   Uses
+      At line 56 in file Count_Types.s
+Comment: isError used once
+
+
+
+ARM Macro Assembler    Page 2 Alphabetic symbol ordering
+Relocatable symbols
+
+isNegative 0000005A
+
+Symbol: isNegative
+   Definitions
+      At line 101 in file Count_Types.s
+   Uses
+      At line 55 in file Count_Types.s
+Comment: isNegative used once
+isPositive 0000004E
+
+Symbol: isPositive
+   Definitions
+      At line 79 in file Count_Types.s
+   Uses
+      At line 54 in file Count_Types.s
+Comment: isPositive used once
+isZero 00000054
+
+Symbol: isZero
+   Definitions
+      At line 90 in file Count_Types.s
+   Uses
+      At line 53 in file Count_Types.s
+Comment: isZero used once
+loop 00000070
+
+Symbol: loop
+   Definitions
+      At line 125 in file Count_Types.s
+   Uses
+      At line 70 in file Count_Types.s
+      At line 114 in file Count_Types.s
+
+zeroAll 0000003A
+
+Symbol: zeroAll
+   Definitions
+      At line 64 in file Count_Types.s
+   Uses
+      At line 43 in file Count_Types.s
+Comment: zeroAll used once
+12 symbols
+352 symbols in table
