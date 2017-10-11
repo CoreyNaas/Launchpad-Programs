@@ -1,0 +1,5 @@
+Dependencies for Project 'EETC4213 Tmp', Target 'EETC4213 Tmp': (DO NOT MODIFY !)
+F (.\Startup.s)(0x59D949DE)(--cpu Cortex-M4.fp --pd "__EVAL SETA 1" -g --apcs=interwork -I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\Luminary--list .\startup.lst --xref -o .\startup.o --depend .\startup.d)
+F (.\main.s)(0x59DC392B)(--cpu Cortex-M4.fp --pd "__EVAL SETA 1" -g --apcs=interwork -I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\Luminary--list .\main.lst --xref -o .\main.o --depend .\main.d)
+I (tm4c123gh6pm.s)(0x59D9538E)
+F (.\tm4c123gh6pm.s)(0x59D9538E)(--cpu Cortex-M4.fp --pd "__EVAL SETA 1" -g --apcs=interwork -I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\Luminary--list .\tm4c123gh6pm.lst --xref -o .\tm4c123gh6pm.o --depend .\tm4c123gh6pm.d)

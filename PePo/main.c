@@ -3,6 +3,9 @@
 // Programmer: Corey Naas
 // Date:  2017/09/26
 
+//TODO:
+//	- Write own string compare
+
 #include <stdio.h>  // sys lib: Standard I/O
 #include "uart.h"   // user lib: UART lib
 #include <string.h>
