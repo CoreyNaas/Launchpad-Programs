@@ -13,6 +13,9 @@ Assignments from EETC 4213 and personal projects for the TI Launchpad TM4C123GH6
 - **Lab6**
   - Takes in two memory addresses and counts the number of negative numbers, positive numbers, zeros stored within those addresses. Lab 6 is an implementation of the NegPosZer subroutine in a C wrapper program. 
    - Code: main.c, Count_Types.s
+- **Lab8**
+  - Emulates a dual traffic light sequence with blinking feature. Implementation of a FSM in ARM Assembly for the TI Launchpad.
+   - Code: main.s   
 
 ## Personal Projects
   - **PePo**
